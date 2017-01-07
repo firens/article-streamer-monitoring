@@ -1,0 +1,28 @@
+{
+  "checks": {
+    "cpu": {
+      "type": "metric",
+      "command": "check-cpu.rb -w 50 -c 80",
+      "subscribers": [
+        "development"
+      ],
+      "interval": 10
+    },
+    "memory": {
+      "type": "metric",
+      "command": "check-ram.rb -w 10 -c 5",
+      "subscribers": [
+        "development"
+      ],
+      "interval": 3
+    },
+    "disk_usage": {
+      "type": "metric",
+      "command": "check-disk-usage.rb -p '/var/lib/docker|/run/docker' -w 50 -c 80",
+      "subscribers": [
+        "development"
+      ],
+      "interval": 10
+    }
+  }
+}

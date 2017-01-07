@@ -19,6 +19,7 @@ RUN wget -O /etc/sensu/config.json https://sensuapp.org/docs/0.26/files/simple-s
     chown -R sensu:sensu /etc/sensu
 
 COPY uchiwa-config.json /etc/sensu/uchiwa.json
+COPY checks.json /etc/sensu/conf.d/checks.json
 
 CMD service redis-server start && \
     service sensu-server start && \

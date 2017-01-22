@@ -6,12 +6,21 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-if [[ $# -ne 1 ]]; then
-    echo "USAGE: 'script.sh [NAME_OF_CLIENT]'"
+if [[ $# -ne 2 ]] && [[ $2 != 'APP' ]] && [[ $2 != 'OTHER' ]]; then
+    echo "USAGE: 'script.sh [NAME_OF_CLIENT] [APP|OTHER]'"
     exit 1
 fi
 
 clientName=$1
+
+if [[ $2 == 'APP' ]]; then
+    subscriptions='"development","application"'
+else
+    subscriptions='"development"'
+fi
+
+# Activate docker deamon API if necessary
+sed -i 's@ExecStart=/usr/bin/dockerd -H fd://.*@ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:4243@' /lib/systemd/system/docker.service
 
 wget -q https://sensu.global.ssl.fastly.net/apt/pubkey.gpg -O- | apt-key add -
 echo "deb     https://sensu.global.ssl.fastly.net/apt sensu main" | tee /etc/apt/sources.list.d/sensu.list
@@ -26,6 +35,8 @@ sudo /opt/sensu/embedded/bin/gem install vmstat
 sensu-install -p memory-checks:1.0.2
 # Disk checks
 sensu-install -p disk-checks:2.0.1
+# Docker checking
+sensu-install -p docker:1.1.5
 
 echo '{}' > /etc/sensu/config.json
 
@@ -38,7 +49,7 @@ cat > /etc/sensu/conf.d/client.json <<- EOM
         "name": "$clientName",
         "environment": "development",
         "subscriptions": [
-          "development"
+          $subscriptions
         ]
     }
 }
@@ -69,3 +80,7 @@ echo 'Installation completed, starting client service'
 service sensu-client restart
 
 echo 'Client service started'
+
+echo "You might need to restart the docker daemon to activate the API :
+ $ systemctl daemon-reload
+ $ service docker restart"

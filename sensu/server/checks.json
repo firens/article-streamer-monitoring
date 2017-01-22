@@ -14,13 +14,77 @@
       "subscribers": [
         "development"
       ],
-      "interval": 3
+      "interval": 10
     },
     "disk_usage": {
       "type": "metric",
       "command": "check-disk-usage.rb -p '/var/lib/docker|/run/docker' -w 50 -c 80",
       "subscribers": [
         "development"
+      ],
+      "interval": 10
+    },
+    "docker": {
+      "type": "metric",
+      "command": "metrics-docker-stats.rb -p http -H localhost:4243",
+      "subscribers": [
+        "development"
+      ],
+      "interval": 10
+    },
+    "docker-redis": {
+      "type": "metric",
+      "command": "check-container.rb -h 127.0.0.1:4243 -c redis",
+      "subscribers": [
+        "application"
+      ],
+      "interval": 10
+    },
+    "docker-webapp": {
+      "type": "metric",
+      "command": "check-container.rb -h 127.0.0.1:4243 -c webapp",
+      "subscribers": [
+        "application"
+      ],
+      "interval": 10
+    },
+    "docker-data-server": {
+      "type": "metric",
+      "command": "check-container.rb -h 127.0.0.1:4243 -c data_server",
+      "subscribers": [
+        "application"
+      ],
+      "interval": 10
+    },
+    "docker-processor": {
+      "type": "metric",
+      "command": "check-container.rb -h 127.0.0.1:4243 -c processor",
+      "subscribers": [
+        "application"
+      ],
+      "interval": 10
+    },
+    "docker-score-updater": {
+      "type": "metric",
+      "command": "check-container.rb -h 127.0.0.1:4243 -c score_updater",
+      "subscribers": [
+        "application"
+      ],
+      "interval": 10
+    },
+    "docker-kafka": {
+      "type": "metric",
+      "command": "check-container.rb -h 127.0.0.1:4243 -c kafka",
+      "subscribers": [
+        "application"
+      ],
+      "interval": 10
+    },
+    "docker-zookeeper": {
+      "type": "metric",
+      "command": "check-container.rb -h 127.0.0.1:4243 -c zookeeper",
+      "subscribers": [
+        "application"
       ],
       "interval": 10
     }
